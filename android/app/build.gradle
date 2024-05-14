@@ -83,9 +83,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.androidtvanime"
+    namespace "com.pong.androidtvanime"
     defaultConfig {
-        applicationId "com.androidtvanime"
+        applicationId "com.pong.androidtvanime"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

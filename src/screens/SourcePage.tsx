@@ -10,6 +10,7 @@ import Sources from '../constants/Sources';
 import Constants from '../constants/Constants';
 import SecureStorage from '../common/SecureStorage';
 import useNavigationFocus from '../navigation/useNavigationFocus';
+import { routes } from '../navigation/routes';
 
 
 const SourcePage = (props: { navigation: any }) => {
@@ -19,7 +20,7 @@ const SourcePage = (props: { navigation: any }) => {
 
     const onSelectSource = async (source: string) => {
         await SecureStorage.setItem(Constants.source, source);
-        navigation.navigate(Constants.home);
+        navigation.navigate(Object.keys(routes)[0]);
     };
 
     return (

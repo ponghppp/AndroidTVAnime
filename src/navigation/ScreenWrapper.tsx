@@ -5,11 +5,10 @@ import {
     View
 } from 'react-native';
 
-import {
-    BackButton
-} from '../common/StyledComponents';
 import { useTVTheme } from '../common/TVTheme';
-import { componentForRoute } from './routes';
+import componentForRoute from '../navigation/componentForRoute'
+import Header from './Header';
+import routes from './routes';
 
 
 const ScreenWrapper = (props: { navigation: any; route: any }) => {
@@ -35,12 +34,13 @@ const ScreenWrapper = (props: { navigation: any; route: any }) => {
             TVEventControl.disableTVMenuKey();
         };
     });
+    const r = Object.values(routes).find(r => r.key == route.name);
+    const title = route.params?.header ?? r.title;
+    const showHeader = r.isShowHeader
     return (
         <View style={styles.container}>
-            <View style={{ height: sizes.headerHeight }} />
+            {showHeader && <Header navigation={navigation} canGoBack={navigation.canGoBack()} title={title} />}
             {componentForRoute(route.name, { navigation })}
-            <View style={styles.container} />
-            <BackButton onPress={() => navigation.goBack()}>Back</BackButton>
         </View>
     );
 };

@@ -12,6 +12,7 @@ import {
     Text
 } from '../common/StyledComponents';
 import { useTVTheme } from '../common/TVTheme';
+import api from '../api/api';
 
 const RightButton = () => {
     const [modalShown, setModalShown] = React.useState(false);
@@ -51,24 +52,18 @@ const RightButton = () => {
     return (
       <View style={aboutStyle}>
         {tvEventsShown ? <Text>{tvEventName}</Text> : null}
-        <Button onPress={() => setModalShown(!modalShown)}>Source</Button>
+        <Button onPress={() => setModalShown(!modalShown)}>{'設定'}</Button>
         <Modal
           animationType="fade"
           transparent
           visible={modalShown}
           onRequestClose={() => setModalShown(false)}>
           <View style={modalStyle}>
-            <SectionContainer title="About">
-              <Text>
-                A demo of various APIs and components provided by React Native for
-                TV.
-              </Text>
+            <SectionContainer title="設定">
               <Text>{hermesText}</Text>
-              <Button onPress={() => setTVEventsShown(!tvEventsShown)}>
-                {tvEventsShown ? 'Hide TV events' : 'Show TV events'}
-              </Button>
+              <Button mode="contained" onPress={() => api.deleteVideoRecord()}>{'刪除影片記錄'}</Button>
               <Button mode="contained" onPress={() => setModalShown(false)}>
-                Dismiss
+                {'關閉'}
               </Button>
             </SectionContainer>
           </View>

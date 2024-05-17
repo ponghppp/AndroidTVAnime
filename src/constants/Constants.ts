@@ -1,6 +1,6 @@
 const Constants = {
     source: 'Source',
-    home: 'Home'
+    record: 'Record'
 }
 
 export default Constants

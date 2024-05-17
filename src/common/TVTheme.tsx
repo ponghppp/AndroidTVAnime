@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import {useColorScheme, Platform, StyleSheet} from 'react-native';
+import {useColorScheme, Platform, StyleSheet, Dimensions} from 'react-native';
 import type {ViewStyle, TextStyle} from 'react-native';
 import {DarkTheme, DefaultTheme} from 'react-native-paper';
 type Theme = typeof DefaultTheme;
@@ -59,7 +59,7 @@ const sizes = {
   smallTextSize: 7.0 * scale,
   smallTextPadding: 2.0 * scale,
   headerFontSize: 30.0 * scale,
-  headerHeight: Platform.OS === 'ios' ? 100.0 * scale : 60.0 * scale,
+  headerHeight: Platform.OS === 'ios' ? 100.0 * scale : 65.0 * scale,
   headerTitleSize: 30.0 * scale,
   headerLeftRightWidth: 200.0 * scale,
 };
@@ -76,6 +76,8 @@ interface Styles {
   headerRight: ViewStyle;
   headerCenter: ViewStyle;
   headerTitle: TextStyle;
+  fullScreenWithoutHeader: ViewStyle;
+  fullScreen: ViewStyle;
 }
 
 // Now define the styles based on the above sizes
@@ -102,7 +104,6 @@ const styleConfig = (theme: Theme) =>
       width: sizes.spacerWidth,
     },
     header: {
-      flex: 1,
       flexDirection: 'row',
       width: '100%',
       justifyContent: 'center',
@@ -114,7 +115,7 @@ const styleConfig = (theme: Theme) =>
       flexDirection: 'row',
       justifyContent: 'flex-start',
       alignItems: 'center',
-      width: sizes.headerLeftRightWidth,
+      width: sizes.headerLeftRightWidth
     },
     headerRight: {
       flexDirection: 'row',
@@ -131,6 +132,16 @@ const styleConfig = (theme: Theme) =>
       fontSize: sizes.headerTitleSize,
       fontWeight: 'bold',
     },
+    fullScreenWithoutHeader: {
+      flex: 1,
+      width: Dimensions.get('screen').width,
+      height: Dimensions.get('screen').height - sizes.headerHeight,
+    },
+    fullScreen: {
+      flex: 1,
+      width: Dimensions.get('screen').width,
+      height: Dimensions.get('screen').height
+    }
   });
 
 // Returns the dark or light theme we want for TV

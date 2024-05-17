@@ -1,60 +1,47 @@
-import React from 'react';
-
-import ButtonsWithFocusHandlingExample from '../screens/ButtonsWithFocusHandlingExample';
-import NextFocusExample from '../screens/NextFocusExample';
-import PressableExample from '../screens/PressableExample';
-import SimpleButtonExample from '../screens/SimpleButtonExample';
-import TVFocusGuideViewExample from '../screens/TVFocusGuideViewExample';
-import TextInputExample from '../screens/TextInputExample';
-import VideoExample from '../screens/VideoExample';
-import HomePage from '../screens/HomePage';
-
-const routes: any = {
+const routes = {
   Home: {
-    title: 'Home',
+    key: 'home',
+    title: 'Android TV Anime',
+    isShow: false,
+    isShowHeader: true
   },
-  SimpleButtonExample: {
-    title: 'Simple button example',
+  Recent: {
+    key: 'recent',
+    title: '最新',
+    isShow: true,
+    isShowHeader: true
   },
-  ButtonsWithFocusHandlingExample: {
-    title: 'Buttons with focus and blur handling',
+  Series: {
+    key: 'series',
+    title: '系列',
+    isShow: false,
+    isShowHeader: true
   },
-  PressableExample: {
-    title: 'Pressable example',
+  Video: {
+    key: 'video',
+    title: '',
+    isShow: false,
+    isShowHeader: false
   },
-  TextInputExample: {
-    title: 'Text input example',
+  Record: {
+    key: 'record',
+    title: '記錄',
+    isShow: true,
+    isShowHeader: true
   },
-  TVFocusGuideViewExample: {
-    title: 'TVFocusGuideView example',
+  Bangumi: {
+    key: 'bangumi',
+    title: '新番',
+    isShow: true,
+    isShowHeader: true
   },
-  NextFocusExample: {
-    title: 'nextFocus API example',
-  },
-  VideoExample: {
-    title: 'Video example',
+  Season: {
+    key: 'season',
+    title: '',
+    isShow: false,
+    isShowHeader: true
   },
 };
 
-const componentForRoute = (routeKey: string, props: any) => {
-  switch (routeKey) {
-    case 'Home':
-      return <HomePage {...props} />;
-    case 'SimpleButtonExample':
-      return <SimpleButtonExample {...props} />;
-    case 'ButtonsWithFocusHandlingExample':
-      return <ButtonsWithFocusHandlingExample {...props} />;
-    case 'PressableExample':
-      return <PressableExample {...props} />;
-    case 'TextInputExample':
-      return <TextInputExample {...props} />;
-    case 'TVFocusGuideViewExample':
-      return <TVFocusGuideViewExample {...props} />;
-    case 'NextFocusExample':
-      return <NextFocusExample {...props} />;
-    case 'VideoExample':
-      return <VideoExample {...props} />;
-  }
-};
+export default routes;
 
-export {routes, componentForRoute};

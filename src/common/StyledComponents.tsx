@@ -35,9 +35,9 @@ const ProgressBar = (props: any) => {
   const {colors} = useTVTheme();
   const progressBarStyles = StyleSheet.create({
     container: {
+      flex: 1,
       flexDirection: 'row',
-      width: '100%',
-      height: 20,
+      height: 5,
       borderWidth: 1,
       borderColor: colors.primary,
     },
@@ -51,7 +51,7 @@ const ProgressBar = (props: any) => {
       backgroundColor: colors.background,
       flexDirection: 'row',
       height: '100%',
-      flex: 1.0 - props?.fractionComplete || 1.0,
+      flex: 1.0 - (props?.fractionComplete || 1.0),
     },
   });
   return (

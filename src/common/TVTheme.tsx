@@ -60,8 +60,8 @@ const sizes = {
   smallTextPadding: 2.0 * scale,
   headerFontSize: 30.0 * scale,
   headerHeight: Platform.OS === 'ios' ? 100.0 * scale : 65.0 * scale,
-  headerTitleSize: 30.0 * scale,
-  headerLeftRightWidth: 200.0 * scale,
+  headerTitleSize: 20.0 * scale,
+  headerLeftRightWidth: 100.0 * scale,
 };
 
 interface Styles {

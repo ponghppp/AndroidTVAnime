@@ -32,14 +32,16 @@ const api = {
         var allSeasons = [];
         var yearsToGet = 10;
         var currentSeasonIdx = Math.ceil(currentMonth / 3) - 1;
+        //current year
         allSeasons.push({
             year: currentYear,
-            seasons: seasonsConst.filter((v, i) => i <= currentSeasonIdx)
+            seasons: seasonsConst.filter((v, i) => i <= currentSeasonIdx).reverse()
         });
+        //prev years
         for (var i = 0; i < yearsToGet; i++) {
             allSeasons.push({
                 year: currentYear + (-(i + 1)),
-                seasons: seasonsConst
+                seasons: seasonsConst.reverse()
             });
         }
         return allSeasons;

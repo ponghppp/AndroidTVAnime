@@ -41,7 +41,6 @@ const VideoControls = ({
         <View style={styles.container}>
             <View style={styles.background} />
             <View style={styles.controls}>
-            <Text style={styles.videoNameText}>{videoName}</Text>
                 <TouchableOpacity
                     hasTVPreferredFocus={true}
                     onPress={() => {
@@ -88,6 +87,7 @@ const VideoControls = ({
                     <Text style={styles.playbackSpeedText}>{`${rate}x`}</Text>
                 </TouchableOpacity>
             </View>
+            <Text style={styles.videoNameText}>{videoName}</Text>
             <View style={styles.progressContainer}>
                 <Text style={styles.timeText}>{formatTime(currentTime)}</Text>
                 <ProgressBar fractionComplete={currentTime / duration} />
@@ -129,9 +129,7 @@ const styles = StyleSheet.create({
     videoNameText: {
         color: "white",
         fontSize: 16,
-        position:'absolute',
-        left: 0,
-        marginLeft: 20
+        alignSelf: 'center'
     },
     progressContainer: {
         flexDirection: "row",

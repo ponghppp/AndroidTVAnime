@@ -24,7 +24,6 @@ const SeasonPage = (props: { navigation: any }) => {
     useEffect(() => {
         const getList = async () => {
             let list = await api.getSeasonAnime(route.params['id']);
-            console.log(list)
             setList(list);
         };
         getList();

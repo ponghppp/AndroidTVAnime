@@ -41,6 +41,12 @@ const routes = {
     isShow: false,
     isShowHeader: true
   },
+  Search: {
+    key: 'search',
+    title: '搜尋',
+    isShow: true,
+    isShowHeader: true
+  }
 };
 
 export default routes;

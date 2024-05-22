@@ -21,7 +21,7 @@ const HomePage = (props: { navigation: any }) => {
           <View>
             {Object.values(routes).filter(r => r.isShow).map((item, i) => (
                 <Button
-                  mode="contained"
+                  mode="outlined"
                   key={item.key}
                   onPress={() => navigation.navigate(item.key)}>
                   {item.title}

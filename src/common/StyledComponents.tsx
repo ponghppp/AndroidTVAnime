@@ -16,23 +16,36 @@ import {
   TextInput as PaperTextInput,
 } from 'react-native-paper';
 
-import {useTVTheme} from './TVTheme';
+import { useTVTheme } from './TVTheme';
 
 // Button used in the demos
 const Button = React.forwardRef(
   (props: React.ComponentPropsWithoutRef<typeof PaperButton>, ref: any) => {
-    const {styles} = useTVTheme();
+    const { styles } = useTVTheme();
+    const buttonStyle = StyleSheet.create({
+      background: {
+        position: 'absolute', 
+        backgroundColor: 'green', 
+        top: 10, 
+        left: 10, 
+        bottom: 10,
+        zIndex: -1
+      }
+    });
     return (
-      <PaperButton {...props} ref={ref} style={styles.button} uppercase={false}>
-        {props.children}
-      </PaperButton>
+      <View>
+        {props['percentage'] && <View style={{...buttonStyle.background, width: props['percentage'] + '%'}}></View>}
+        <PaperButton {...props} ref={ref} style={styles.button} uppercase={false} color='pink'>
+          {props.children}
+        </PaperButton>
+      </View>
     );
   },
 );
 
 // Progress bar
 const ProgressBar = (props: any) => {
-  const {colors} = useTVTheme();
+  const { colors } = useTVTheme();
   const progressBarStyles = StyleSheet.create({
     container: {
       flex: 1,
@@ -64,7 +77,7 @@ const ProgressBar = (props: any) => {
 
 // Pressable used in the demos
 const Pressable = React.forwardRef((props: any, ref: any) => {
-  const {styles, colors} = useTVTheme();
+  const { styles, colors } = useTVTheme();
   const label = props.label;
   const pressableStyle = (pressed: boolean, focused: boolean) => [
     styles.button,
@@ -83,8 +96,8 @@ const Pressable = React.forwardRef((props: any, ref: any) => {
       {...props}
       hasTVPreferredFocus={props.hasTVPreferredFocus}
       ref={ref}
-      style={({pressed, focused}) => pressableStyle(pressed, focused)}>
-      {({pressed, focused}) => {
+      style={({ pressed, focused }) => pressableStyle(pressed, focused)}>
+      {({ pressed, focused }) => {
         return (
           <PaperText style={pressableTextStyle}>
             {label(pressed, focused)}
@@ -98,7 +111,7 @@ const Pressable = React.forwardRef((props: any, ref: any) => {
 // Back button used on every screen
 const BackButton = React.forwardRef(
   (props: React.ComponentPropsWithoutRef<typeof PaperButton>, ref: any) => {
-    const {styles} = useTVTheme();
+    const { styles } = useTVTheme();
     return (
       <Button
         {...props}
@@ -114,7 +127,7 @@ const BackButton = React.forwardRef(
 
 // Text input without a touchable wrapper
 const PlainTextInput = (props: React.ComponentProps<any>) => {
-  const {styles} = useTVTheme();
+  const { styles } = useTVTheme();
   return (
     <PaperTextInput
       {...props}
@@ -127,7 +140,7 @@ const PlainTextInput = (props: React.ComponentProps<any>) => {
 
 // Text input with a touchable wrapper to manage focus on TV
 const WrappedTextInput = (props: React.ComponentProps<any>) => {
-  const {styles} = useTVTheme();
+  const { styles } = useTVTheme();
   const textInputRef = React.useRef<any>();
   return (
     <TouchableOpacity
@@ -147,7 +160,7 @@ const WrappedTextInput = (props: React.ComponentProps<any>) => {
 
 // TV-styled text component
 const Text = (props: React.ComponentProps<typeof PaperText>) => {
-  const {styles} = useTVTheme();
+  const { styles } = useTVTheme();
   return (
     <PaperText style={[styles.text, props.style]}>{props.children}</PaperText>
   );
@@ -155,18 +168,18 @@ const Text = (props: React.ComponentProps<typeof PaperText>) => {
 
 // Just a view to fill in space, used in the focus guide and nextFocus demos
 const Spacer = () => {
-  const {styles} = useTVTheme();
+  const { styles } = useTVTheme();
   return <View style={styles.spacer} />;
 };
 
 // Wrappers for react-native-paper containers
 const RowContainer = (props: React.ComponentProps<typeof View>) => {
-  const {styles} = useTVTheme();
+  const { styles } = useTVTheme();
   return <View style={styles.row}>{props.children}</View>;
 };
 
 const SectionContainer = (props: React.ComponentProps<typeof List.Section>) => {
-  const {styles} = useTVTheme();
+  const { styles } = useTVTheme();
   return (
     <List.Section title={props.title} titleStyle={styles.text}>
       {props.children}

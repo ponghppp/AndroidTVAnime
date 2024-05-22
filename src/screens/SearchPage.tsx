@@ -26,8 +26,8 @@ const SearchPage = (props: { navigation: any }) => {
     const [quickDict, setQuickDict] = React.useState([]);
 
     useEffect(() => {
-        let dict = require('../../assets/ms_quick.dict.txt');
-        console.log(dict);
+        let dict = require('../../assets/ms_quick.dict.json');
+        setQuickDict(dict);
     }, [])
 
     useEffect(() => {
@@ -41,7 +41,7 @@ const SearchPage = (props: { navigation: any }) => {
     }, [keyboardType])
 
     const getQuickKeyboard = () => {
-        let list = Constants.quickKeyboard.map(k => k.map(r => ({ id: r.key, title: r.value } as SelectItem)));
+        let keybord = 
         setList(list);
     }
 

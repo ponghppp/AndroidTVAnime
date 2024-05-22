@@ -39,6 +39,8 @@ const VideoPage = () => {
     const getDownloadVideo = async () => {
       let selected = (route.params['list'] as SelectItem[]).find(s => s.id == route.params['selectedId']);
       let data = await api.downloadVideo(selected.data['apireq']);
+      console.log(data)
+
       await video.current.loadAsync({ uri: data.url, headers: { cookie: data.cookie } });
       await video.current.setProgressUpdateIntervalAsync(1000);
       let records = await SecureStorage.getItem(Constants.record);
@@ -152,6 +154,7 @@ const VideoPage = () => {
       <TouchableOpacity activeOpacity={1} onPress={singleTap} style={styles.videoContainer}>
         <Video
           ref={video}
+          // source={require('../../assets/bach-handel-corelli.mp4')}
           rate={playbackSpeed}
           isMuted={isMuted}
           shouldPlay={isPlaying}

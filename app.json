@@ -37,7 +37,8 @@
       "package": "com.pong.androidtvanime"
     },
     "ios": {
-      "userInterfaceStyle": "automatic"
+      "userInterfaceStyle": "automatic",
+      "bundleIdentifier": "com.pong.androidtvanime"
     }
   }
 }

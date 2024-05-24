@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
-import { ScrollView, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import SelectItem from '../class/SelectItem';
-import Loading from '../common/Loading';
 import {
     Button,
+    CenterRowContainer,
     RowContainer,
     Text
 } from '../common/StyledComponents';
 import { useTVTheme } from '../common/TVTheme';
-import routes from '../navigation/routes';
-import useNavigationFocus from '../navigation/useNavigationFocus';
 import Constants from '../constants/Constants';
+import useNavigationFocus from '../navigation/useNavigationFocus';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SearchPage = (props: { navigation: any }) => {
     const { navigation } = props;
@@ -24,32 +24,77 @@ const SearchPage = (props: { navigation: any }) => {
     const [quickWord, setQuickWord] = React.useState('');
     const [wordSelection, setWordSelection] = React.useState('');
     const [quickDict, setQuickDict] = React.useState([]);
+    const [keyboard, setKeyboard] = React.useState<[[{ key: string, value: string }]]>();
 
     useEffect(() => {
         let dict = require('../../assets/ms_quick.dict.json');
         setQuickDict(dict);
+        let k = require('../../assets/keyboard.json');
+        setKeyboard(k);
     }, [])
 
     useEffect(() => {
-        switch (keyboardType) {
-            case Constants.quick:
-                getQuickKeyboard();
-                break;
-            case Constants.alphanumeric:
-                break;
+        if (keyboard != undefined && keyboardType != undefined) {
+            switch (keyboardType) {
+                case Constants.quick:
+                    getQuickKeyboard();
+                    break;
+                case Constants.alphanumeric:
+                    getAlphanumericKeyboard(false);
+                    break;
+            }
         }
-    }, [keyboardType])
+    }, [keyboard, keyboardType])
+
+    useFocusEffect(
+        useCallback(() => {
+            setKeyboardType(Constants.quick);
+        }, [])
+    );
 
     const getQuickKeyboard = () => {
-        let keybord = 
+        let keys = keyboard.slice(1, keyboard.length);
+        let list = keys.map(r => r.map(k => ({ id: k.key, title: k.value } as SelectItem)))
+        list[1].splice(list[1].length, 0, ({ id: 'del', title: '⌫' } as SelectItem));
+        list[2].splice(list[2].length, 0, ({ id: 'lang', title: '🌎' } as SelectItem));
+        setList(list);
+    }
+
+    const getAlphanumericKeyboard = (isUpper: boolean) => {
+        let list = keyboard.map(r => r.map(k => ({ id: k.key, title: isUpper ? k.key.toUpperCase() : k.key } as SelectItem)))
+        list[1].splice(list[1].length, 0, ({ id: 'del', title: '⌫' } as SelectItem));
+        list[2].splice(0, 0, ({ id: 'shift', title: '⇧' } as SelectItem));
+        list[2].splice(list[2].length, 0, ({ id: 'lang', title: '🌎' } as SelectItem));
         setList(list);
     }
 
     const onSelectItem = (item: SelectItem) => {
-        if (quickWord.length == 1) {
-            setQuickWord(quickWord + item.title);
-        } else {
-            setQuickWord(item.title);
+        if (item.id == 'shift') {
+            getAlphanumericKeyboard(true);
+            return;
+        }
+        if (item.id == 'del') {
+            setQuickWord(quickWord.substring(0, quickWord.length - 1));
+            return;
+        }
+        if (item.id == 'lang') {
+            let types = [Constants.quick, Constants.alphanumeric];
+            let idx = types.indexOf(keyboardType);
+            if (idx + 1 == types.length) idx = 0
+            else idx += 1;
+            setKeyboardType(types[idx]);
+            return;
+        }
+        if (keyboardType == Constants.quick) {
+            if (quickWord.length != 1) {
+                setQuickWord(item.title);
+            }
+            else {
+                setQuickWord(quickWord + item.title);
+            }
+        }
+        else {
+            setInput(input + item.title);
         }
     };
 
@@ -58,11 +103,11 @@ const SearchPage = (props: { navigation: any }) => {
             <Text>{quickWord}</Text>
             <Text>{input}</Text>
             {list.map(l => (
-                <RowContainer>
+                <CenterRowContainer>
                     {l.map(k => (
                         <Button mode='outlined' key={k.id} onPress={() => onSelectItem(k)}>{k.title}</Button>
                     ))}
-                </RowContainer>
+                </CenterRowContainer>
             ))}
         </ScrollView>
     );

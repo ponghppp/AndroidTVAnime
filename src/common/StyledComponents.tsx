@@ -178,6 +178,11 @@ const RowContainer = (props: React.ComponentProps<typeof View>) => {
   return <View style={styles.row}>{props.children}</View>;
 };
 
+const CenterRowContainer = (props: React.ComponentProps<typeof View>) => {
+  const { styles } = useTVTheme();
+  return <View style={styles.centerRow}>{props.children}</View>;
+};
+
 const SectionContainer = (props: React.ComponentProps<typeof List.Section>) => {
   const { styles } = useTVTheme();
   return (
@@ -194,6 +199,7 @@ export {
   ProgressBar,
   Pressable,
   RowContainer,
+  CenterRowContainer,
   SectionContainer,
   Spacer,
   Text,

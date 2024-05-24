@@ -67,6 +67,7 @@ const sizes = {
 interface Styles {
   container: ViewStyle;
   row: ViewStyle;
+  centerRow: ViewStyle;
   text: TextStyle;
   textInput: TextStyle;
   button: ViewStyle;
@@ -90,6 +91,13 @@ const styleConfig = (theme: Theme) =>
       flexDirection: 'row',
       flexWrap: 'wrap',
       padding: sizes.rowPadding,
+    },
+    centerRow: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      padding: sizes.rowPadding,
+      alignItems: 'center',
+      justifyContent: 'center'
     },
     text: {
       padding: sizes.textPadding,

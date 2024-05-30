@@ -26,13 +26,12 @@ const SeriesPage = (props: { navigation: any }) => {
     const { styles } = useTVTheme();
 
     useEffect(() => {
-        setPercentage();
+        adjustList();
     },[seriesList]);
 
     useFocusEffect(
         useCallback(() => {
             let id = route.params['id'];
-            setIsLoading(true);
             const getList = async () => {
                 let list = await api.getSeries(id);
                 setSeriesList(list);
@@ -43,7 +42,8 @@ const SeriesPage = (props: { navigation: any }) => {
         }, [])
     );
 
-    const setPercentage = async () => {
+    const adjustList = async () => {
+        let current = await SecureStorage.getItem(Constants.current);
         let records = await SecureStorage.getItem(Constants.record);
         if (records != '') {
             let json: Record[] = JSON.parse(records);
@@ -53,12 +53,17 @@ const SeriesPage = (props: { navigation: any }) => {
                     record.data['percentage'] = (rec.currentTime / rec.duration) * 100
                 }
             });
-            setList(seriesList);
+            let currentRecord = seriesList.find(l => l.id == current);
+            if (currentRecord != undefined) {
+                currentRecord.focus = true;
+            }
         }
+        setList(seriesList);
     }
  
     const onSelectItem = (item: SelectItem) => {
-        let data = { list, selectedId: item.id, seriesId: route.params['id'] };
+        let id = route.params['id'];
+        let data = { list, selectedId: item.id, seriesId: id, header: route.params['header'] };
         navigation.navigate(routes.Video.key, data);
     };
 
@@ -67,7 +72,7 @@ const SeriesPage = (props: { navigation: any }) => {
             <View style={styles.container}>
                 <Loading show={isLoading} />
                 {list.map(item => (
-                    <Button mode='outlined' percentage={item.data['percentage']} key={item.id} onPress={() => onSelectItem(item)}>{item.title}</Button>
+                    <Button mode='outlined' hasTVPreferredFocus={item.focus} percentage={item.data['percentage']} key={item.id} onPress={() => onSelectItem(item)}>{item.title}</Button>
                 ))}
             </View>
         </ScrollView>

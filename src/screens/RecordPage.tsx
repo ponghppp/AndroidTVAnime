@@ -1,18 +1,18 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, View } from 'react-native';
+import Record from '../class/Record';
 import SelectItem from '../class/SelectItem';
 import Loading from '../common/Loading';
+import SecureStorage from '../common/SecureStorage';
 import {
     Button
 } from '../common/StyledComponents';
 import { useTVTheme } from '../common/TVTheme';
+import Constants from '../constants/Constants';
 import routes from '../navigation/routes';
 import useNavigationFocus from '../navigation/useNavigationFocus';
-import SecureStorage from '../common/SecureStorage';
-import Record from '../class/Record';
-import Constants from '../constants/Constants';
-import { useFocusEffect } from '@react-navigation/native';
 
 const RecordPage = (props: { navigation: any }) => {
     const { navigation } = props;
@@ -28,10 +28,12 @@ const RecordPage = (props: { navigation: any }) => {
                 let records = await SecureStorage.getItem(Constants.record);
                 if (records != '') {
                     let json: Record[] = JSON.parse(records);
+
                     let groups = json.reduce((x, y) => {
                         (x[y.seriesId] = x[y.seriesId] || []).push(y);
                         return x;
                     }, {});
+
                     let list = Object.values(groups).map(g => ({
                         id: g[0]['seriesId'],
                         title: g[0]['videoName'].split(' '),

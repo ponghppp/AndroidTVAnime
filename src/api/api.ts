@@ -86,48 +86,17 @@ const api = {
                 break;
         }
     },
+    searchAnime: async (input: string) => {
+        let source = await SecureStorage.getSource();
+        switch (source) {
+            case Sources.Anime1:
+                let resp = anime1Api.searchAnime(1, input);
+                return resp;
+            case Sources.Myself:
+                break;
+        }
+    }
 }
-
-// function searchAnime(startPage, page, searchText) {
-//     var url = 'https://anime1.me/page/' + page + '?s=' + searchText;
-
-//     if (page == 1) {
-//         item_count = 0;
-//     }
-//     showLoading();
-//     $
-//         .ajax({
-//             type: "GET",
-//             url: url,
-//             async: true,
-//             success: function (text) {
-//                 hideLoading();
-//                 var articles = getTagHtml(text, 'article');
-//                 for (var i = 0; i < articles.length; i++) {
-//                     var article = articles[i];
-//                     var tagAs = getTagHtml(article, 'a');
-//                     var animeName = getInnerHtml(tagAs[0]);
-//                     var animeId = getSearchAnimeId(tagAs[0], 'href');
-//                     var regex = /[0-9]/g;
-//                     var found = animeId.match(regex);
-//                     if (found.length != animeId.length) {
-//                         continue;
-//                     }
-//                     var param = {
-//                         id: animeId
-//                     };
-//                     var hrefParam = paramToHref(param);
-//                     addToList(item_count + i, 'episode.html' + hrefParam,
-//                         animeName);
-//                 }
-//                 item_count += articles.length;
-//                 if (text.includes('nav-previous') && page <= 3) {
-//                     searchAnime(startPage, page + 1, searchText);
-//                 }
-//                 showItem(0);
-//             }
-//         });
-// }
 
 // function animeSeriesFromEpisode(episodeId) {
 //     var url = 'https://anime1.me/' + episodeId;

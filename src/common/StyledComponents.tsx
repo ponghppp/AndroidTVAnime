@@ -32,9 +32,11 @@ const Button = React.forwardRef(
         zIndex: -1
       }
     });
+
+    const percentageStyle = {...buttonStyle.background, width: `${props['percentage']}%`};
     return (
       <View>
-        {props['percentage'] && <View style={{...buttonStyle.background, width: props['percentage'] + '%'}}></View>}
+        {(!isNaN(props['percentage']) && parseInt(props['percentage']) > 0) && <View style={percentageStyle}></View>}
         <PaperButton {...props} ref={ref} style={styles.button} uppercase={false} color='pink'>
           {props.children}
         </PaperButton>

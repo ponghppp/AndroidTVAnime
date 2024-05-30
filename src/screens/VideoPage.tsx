@@ -16,10 +16,12 @@ import useNavigationFocus from '../navigation/useNavigationFocus';
 import SecureStorage from '../common/SecureStorage';
 import Constants from '../constants/Constants';
 import Record from '../class/Record';
+import routes from '../navigation/routes';
 
 const playbackSpeedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
-const VideoPage = () => {
+const VideoPage = (props: { navigation: any, setBackAction: React.Dispatch<React.SetStateAction<() => void>> }) => {
+  const { setBackAction } = props;
   const video = React.useRef<Video>();
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -32,71 +34,77 @@ const VideoPage = () => {
   const [isVideoLoaded, setIsVideoLoaded] = React.useState(false);
   const timerRef = useRef(null);
   const route = useRoute();
-  const navigation = useNavigation();
+  const [currentId, setCurrentId] = useState('');
+  const { navigation } = props;
+
   useNavigationFocus(navigation, setHasNavigationFocus);
 
   useEffect(() => {
-    const getDownloadVideo = async () => {
-      let selected = (route.params['list'] as SelectItem[]).find(s => s.id == route.params['selectedId']);
-      let data = await api.downloadVideo(selected.data['apireq']);
-      console.log(data)
-
-      await video.current.loadAsync({ uri: data.url, headers: { cookie: data.cookie } });
-      await video.current.setProgressUpdateIntervalAsync(1000);
-      let records = await SecureStorage.getItem(Constants.record);
-      if (records != '') {
-        let json: Record[] = JSON.parse(records);
-        let record = json.find(j => j.videoId == route.params['selectedId']);
-        if (record != undefined) {
-          await video.current.setPositionAsync(record.currentTime);
-        }
-      }
-      await video.current.playAsync();
-      setIsVideoLoaded(true);
-      setIsPlaying(true);
-    };
     video.current.setVolumeAsync(1);
     setIsLoading(true);
-    getDownloadVideo();
-    return stopTimer();
+    setCurrentId(route.params['selectedId']);
   }, []);
 
   useEffect(() => {
-    if (isShowControl) {
-      startTimer();
+    setIsLoading(true);
+    video.current.stopAsync();
+    if (currentId != '') {
+      recordVideo();
+      SecureStorage.setItem(Constants.current, currentId);
+      downloadVideo();
     }
-  }, [isShowControl]);
+  }, [currentId]);
 
   useEffect(() => {
     if (!isPlaying) {
-      stopTimer();
       recordVideo();
       video.current.pauseAsync();
     } else {
-      startTimer();
       video.current.playAsync();
     }
   }, [isPlaying]);
 
-  const startTimer = () => {
-    timerRef.current = setTimeout(() => {
-      setIsShowControl(false);
-    }, 2000);
+  useEffect(() => {
+    setBackAction(() => backAction);
+  }, [isShowControl]);
+
+  const downloadVideo = async () => {
+    let selected = (route.params['list'] as SelectItem[]).find(s => s.id == currentId);
+    let data = await api.downloadVideo(selected.data['apireq']);
+
+    await video.current.loadAsync({ uri: data.url, headers: { cookie: data.cookie } });
+    await video.current.setProgressUpdateIntervalAsync(1000);
+    let records = await SecureStorage.getItem(Constants.record);
+    if (records != '') {
+      let json: Record[] = JSON.parse(records);
+      let record = json.find(j => j.videoId == currentId);
+      if (record != undefined) {
+        await video.current.setPositionAsync(record.currentTime);
+      }
+    }
+    await video.current.playAsync();
+    setIsVideoLoaded(true);
+    setIsPlaying(true);
   }
 
-  const stopTimer = () => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
+  const backAction = () => {
+    if (isShowControl) {
+      setIsShowControl(false);
+    } else {
+      navigation.goBack();
     }
   }
 
   const recordVideo = () => {
-    let selected = (route.params['list'] as SelectItem[]).find(s => s.id == route.params['selectedId']);
-    let record: Record = {videoId: route.params['selectedId'],
+    let selected = (route.params['list'] as SelectItem[]).find(s => s.id == currentId);
+    let record: Record = {
+      videoId: currentId,
       currentTime: currentTime,
       duration: duration,
       seriesId: route.params['seriesId'],
-      videoName: selected.title
+      videoName: selected.title,
+      categoryId: route.params['categoryId'],
+      viewEpoch: Date.now()
     }
     api.recordVideo(record);
   }
@@ -106,6 +114,9 @@ const VideoPage = () => {
     if (isVideoLoaded) {
       recordVideo();
     }
+    if (duration == 0) {
+      setDuration(status.durationMillis);
+    }
     setCurrentTime(status.positionMillis);
   };
 
@@ -114,11 +125,19 @@ const VideoPage = () => {
   };
 
   const playNextVideo = () => {
-
+    let list = [...(route.params['list'] as SelectItem[])].reverse();
+    let currentIdx = list.findIndex(s => s.id == currentId);
+    let nextIdx = Math.min(list.length - 1, currentIdx + 1);
+    let nextId = list[nextIdx].id;
+    if (currentId != nextId) setCurrentId(nextId);
   };
 
   const playPreviousVideo = () => {
-
+    let list = [...(route.params['list'] as SelectItem[])].reverse();
+    let currentIdx = list.findIndex(s => s.id == currentId);
+    let nextIdx = Math.max(0, currentIdx - 1);
+    let nextId = list[nextIdx].id;
+    if (currentId != nextId) setCurrentId(nextId);
   };
 
   const togglePlaybackSpeed = () => {
@@ -146,8 +165,8 @@ const VideoPage = () => {
     setIsLoading(false);
   }
 
-  let selected = (route.params['list'] as SelectItem[]).find(s => s.id == route.params['selectedId']);
-  let videoName = selected.title;
+  let selected = (route.params['list'] as SelectItem[]).find(s => s.id == currentId);
+  let videoName = selected?.title ?? '';
   return (
     <View style={styles.videoContainer}>
       <FloatLoading show={isLoading} />

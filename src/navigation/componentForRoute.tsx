@@ -9,6 +9,7 @@ import RecordPage from '../screens/RecordPage';
 import BangumiPage from '../screens/BangumiPage';
 import SeasonPage from '../screens/SeasonPage';
 import SearchPage from '../screens/SearchPage';
+import ResultPage from '../screens/ResultPage';
 
 const componentForRoute = (routeKey: string, props: any) => {
     switch (routeKey) {
@@ -28,6 +29,8 @@ const componentForRoute = (routeKey: string, props: any) => {
             return <SeasonPage {...props} />;
         case routes.Search.key:
             return <SearchPage {...props} />;
+        case routes.Result.key:
+            return <ResultPage {...props} />;
     }
 };
 

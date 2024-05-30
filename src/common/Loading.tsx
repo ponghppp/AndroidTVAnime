@@ -26,7 +26,8 @@ const styleSheet = StyleSheet.create({
     },
     image: {
         width: 300,
-        height: 300
+        height: 300,
+        resizeMode: 'contain'
     }
 });
 

@@ -44,7 +44,7 @@ const anime1Api = {
             var animeName = animeNames[i];
             var animeId = animeIds[i];
             var apireq = commonApi.getTagAttr(video, 'data-apireq', ' ');
-            let item: SelectItem = { id: animeId, title: animeName, header: animeName, data: { apireq } }
+            let item: SelectItem = { id: animeId, title: animeName, header: animeName, data: { apireq } } as SelectItem
             list.push(item);
         }
         //has prev page
@@ -78,10 +78,57 @@ const anime1Api = {
         for (var i = 0; i < tagAs.length; i++) {
             var id = commonApi.getTagAttr(tagAs[i], 'href', '"').split('=')[1];
             var name = commonApi.getInnerHtml(tagAs[i]);
-            let item = { id: id, title: name, header: name} as SelectItem;
+            let item = { id: id, title: name, header: name } as SelectItem;
             list.push(item);
         }
         return list;
+    },
+    searchAnime: async (page: number = 1, input: string) => {
+        var url = 'https://anime1.me/page/' + page + '?s=' + input;
+        let resp = await axios.get(url);
+        let html = resp.data;
+        var articles = commonApi.getTagHtml(html, 'article');
+        let list: SelectItem[] = [];
+        let results: { animeId: string, categoryId: string, categoryName: string }[] = [];
+        for (var i = 0; i < articles.length; i++) {
+            var article = articles[i];
+            var tagAs = commonApi.getTagHtml(article, 'a');
+            //var animeName = commonApi.getInnerHtml(tagAs[0]);
+            var animeId = commonApi.getSearchAnimeId(tagAs[0], 'href');
+            var regex = /[0-9]/g;
+            var found = animeId.match(regex);
+            if (found.length != animeId.length) {
+                continue;
+            }
+            var footers = commonApi.getTagHtml(article, 'footer');
+            var span = commonApi.getTagHtmlWithFirstAttr(footers[0], 'span', 'class="cat-links"');
+            var firstA = commonApi.getTagHtml(span[0], 'a')[0];
+            var categoryName = commonApi.getInnerHtml(firstA);
+            var categoryId = commonApi.getTagAttr(firstA, 'href', ' ').replace('https://anime1.me/category/', '');
+            if (!list.find(l => l.id == categoryId)) {
+                list.push({id: categoryId, title: categoryName, header: categoryName} as SelectItem)
+            }
+        }
+        //has previous page
+        if (page <= 3 && html.includes('nav-previous')) {
+            let prev_list = list.concat(await anime1Api.searchAnime(page + 1, input));
+            for (var i = 0; i < prev_list.length; i++) {
+                if (!list.map(l => l.id).includes(prev_list[i].id)) {
+                    list.push(prev_list[i]);
+                }
+            }
+        }
+        return list;
+    },
+    getSeriesIdByCategoryId: async (categoryId: string) => {
+        let url = 'https://anime1.me/category/' + categoryId;
+        let resp = await axios.get(url);
+        let html = resp.data;
+        let startIdx = html.indexOf('/?cat=');
+        let endIdx = html.indexOf('"', startIdx);
+        let catStr = html.substring(startIdx, endIdx);
+        let seriesId = catStr.split('=')[1];
+        return seriesId;
     }
 }
 export default anime1Api;

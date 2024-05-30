@@ -29,7 +29,7 @@ const Header = (props: {
         <Text style={styles.headerTitle}>{props.title}</Text>
       </View>
       <View style={styles.headerRight}>
-        <RightButton />
+        <RightButton {...props}/>
       </View>
     </View>
   );

@@ -10,7 +10,7 @@ import Sources from '../constants/Sources';
 import Constants from '../constants/Constants';
 import SecureStorage from '../common/SecureStorage';
 import useNavigationFocus from '../navigation/useNavigationFocus';
-import { routes } from '../navigation/routes';
+import routes from '../navigation/routes';
 
 
 const SourcePage = (props: { navigation: any }) => {
@@ -26,8 +26,11 @@ const SourcePage = (props: { navigation: any }) => {
     return (
         <SectionContainer title=" ">
             <RowContainer>
-                <Button hasTVPreferredFocus={navFocused} onPress={() => onSelectSource(Sources.Anime1)} >{Sources.Anime1}</Button>
-                <Button onPress={() => onSelectSource(Sources.Myself)}>{Sources.Myself}</Button>
+                {
+                    Object.values(Sources).map(s => (
+                        <Button mode="contained" onPress={() => onSelectSource(s)}>{s}</Button>
+                    ))
+                }
             </RowContainer>
         </SectionContainer>
     );

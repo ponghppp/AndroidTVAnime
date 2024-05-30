@@ -106,7 +106,7 @@ const styleConfig = (theme: Theme) =>
       fontSize: sizes.labelFontSize,
     },
     button: {
-      margin: sizes.buttonMargin,
+      margin: sizes.buttonMargin
     },
     spacer: {
       width: sizes.spacerWidth,

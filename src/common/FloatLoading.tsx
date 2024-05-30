@@ -24,11 +24,14 @@ const styleSheet = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        bottom: 0
+        bottom: 0,
+        backgroundColor: 'black',
+        zIndex: 2
     },
     image: {
         width: 300,
-        height: 300
+        height: 300,
+        resizeMode: 'contain'
     }
 });
 

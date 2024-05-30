@@ -3,6 +3,8 @@ interface Record {
     currentTime: number, 
     duration: number, 
     seriesId: string, 
-    videoName: string
+    videoName: string,
+    categoryId: string,
+    viewEpoch: number
 }
 export default Record

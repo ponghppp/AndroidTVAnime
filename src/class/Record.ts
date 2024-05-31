@@ -4,6 +4,7 @@ interface Record {
     duration: number, 
     seriesId: string, 
     videoName: string,
+    seriesName: string,
     viewEpoch: number,
     source: string
 }

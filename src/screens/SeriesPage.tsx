@@ -64,7 +64,6 @@ const SeriesPage = (props: { navigation: any }) => {
     const onSelectItem = (item: SelectItem) => {
         let id = route.params['id'];
         let data = { list, selectedId: item.id, seriesId: id, header: route.params['header'] };
-        console.log(list);
         navigation.navigate(routes.Video.key, data);
     };
 

@@ -26,9 +26,10 @@ const RecordPage = (props: { navigation: any }) => {
         useCallback(() => {
             const getList = async () => {
                 let records = await SecureStorage.getItem(Constants.record);
+                let source = await SecureStorage.getSource();
                 if (records != '') {
                     let json: Record[] = JSON.parse(records);
-
+                    json = json.filter(j => j.source == source);
                     let groups = json.reduce((x, y) => {
                         (x[y.seriesId] = x[y.seriesId] || []).push(y);
                         return x;
@@ -36,8 +37,8 @@ const RecordPage = (props: { navigation: any }) => {
 
                     let list = Object.values(groups).map(g => ({
                         id: g[0]['seriesId'],
-                        title: g[0]['videoName'].split(' '),
-                        header: g[0]['videoName'].split(' ').slice(0, -1),
+                        title: g[0]['seriesName'],
+                        header: g[0]['seriesName'],
                         data: { percentage: (g[0]['currentTime'] / g[0]['duration']) * 100 }
                     } as SelectItem));
                     setList(list);

@@ -52,12 +52,6 @@ const routes = {
     title: '搜尋結果',
     isShow: false,
     isShowHeader: true
-  },
-  Source: {
-    key: 'source',
-    title: '影片來源',
-    isShow: false,
-    isShowHeader: true
   }
 };
 

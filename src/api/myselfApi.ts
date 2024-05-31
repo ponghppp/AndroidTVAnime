@@ -1,7 +1,6 @@
 import axios from "axios";
 import HTMLParser from 'fast-html-parser';
 import SelectItem from "../class/SelectItem";
-import React from "react";
 import commonApi from "./commonApi";
 
 const myselfApi = {
@@ -25,16 +24,15 @@ const myselfApi = {
         let lis = epList.querySelectorAll('li');
         let sName = '';
         if (seriesName) {
-            console.log(seriesName);
-            sName = seriesName.split(' ')[0] + ' ';
+            sName = seriesName.split(' ')[0];
             if (seriesName.split(' ').pop().match(/[0-9]/i)) {
-                sName = seriesName.split(' ')[0] + ' ';
+                sName = seriesName.split(' ')[0];
             }
         }
         let list: SelectItem[] = lis.map(l => ({
             id: l.querySelectorAll('a')[1].attributes['data-href'].split('/').pop(),
-            title: sName + l.querySelectorAll('a')[0].text,
-            header: sName + l.querySelectorAll('a')[0].text,
+            title: sName + ' ' + l.querySelectorAll('a')[0].text,
+            header: sName,
             data: { apireq: l.querySelectorAll('a')[1].attributes['data-href'].split('/').pop() }
         }));
         return list.reverse();
@@ -65,7 +63,13 @@ const myselfApi = {
 
     },
     searchAnime: async (page: number = 1, input: string) => {
+        let homeUrl = 'https://myself-bbs.com/portal.php';
+        let resp = await axios.get(homeUrl);
+        let html = resp.data;
+        let root = HTMLParser.parse(html);
+        let formhash = root.querySelectorAll('input[name="formhash"]');
 
+        let url = `https://myself-bbs.com/search.php?mod=forum&searchid=4172&orderby=lastpost&ascdesc=desc&searchsubmit=yes&kw=${input}&page=${page}`
     }
 }
 export default myselfApi;

@@ -102,7 +102,8 @@ const VideoPage = (props: { navigation: any, setBackAction: React.Dispatch<React
       seriesId: route.params['seriesId'],
       videoName: selected.title,
       viewEpoch: Date.now(),
-      source: await SecureStorage.getSource()
+      source: await SecureStorage.getSource(),
+      seriesName: selected.header
     }
     api.recordVideo(record);
   }

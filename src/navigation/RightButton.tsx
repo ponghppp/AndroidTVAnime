@@ -59,7 +59,7 @@ const RightButton = (props: {
     : '';
 
   const deleteBtnPressed = () => {
-    api.deleteVideoRecord()
+    api.deleteVideoRecord();
   }
 
   const sourceBtnPressed = () => {

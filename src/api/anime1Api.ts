@@ -1,6 +1,7 @@
 import axios from "axios";
 import SelectItem from "../class/SelectItem";
 import commonApi from "./commonApi";
+import HTMLParser from 'fast-html-parser';
 
 const anime1Api = {
     getAnimeList: async () => {
@@ -37,14 +38,17 @@ const anime1Api = {
             var animeId = href.substring(href.lastIndexOf('/') + 1);
             animeIds.push(animeId);
         }
-
+        var root = HTMLParser.parse(html);
+        let metas = root.querySelectorAll('meta');
+        let meta = metas.find(m => m.attributes['name'] == 'keywords');
+        let seriesName = meta.attributes['content'];
         var videos = commonApi.getTagHtml(html, 'video');
         for (var i = 0; i < videos.length; i++) {
             var video = videos[i];
             var animeName = animeNames[i];
             var animeId = animeIds[i];
             var apireq = commonApi.getTagAttr(video, 'data-apireq', ' ');
-            let item: SelectItem = { id: animeId, title: animeName, header: animeName, data: { apireq } } as SelectItem
+            let item: SelectItem = { id: animeId, title: animeName, header: seriesName, data: { apireq } } as SelectItem
             list.push(item);
         }
         //has prev page
@@ -92,7 +96,6 @@ const anime1Api = {
         for (var i = 0; i < articles.length; i++) {
             var article = articles[i];
             var tagAs = commonApi.getTagHtml(article, 'a');
-            //var animeName = commonApi.getInnerHtml(tagAs[0]);
             var animeId = commonApi.getSearchAnimeId(tagAs[0], 'href');
             var regex = /[0-9]/g;
             var found = animeId.match(regex);

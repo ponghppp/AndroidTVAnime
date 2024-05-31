@@ -1,22 +1,20 @@
 import {
-  AVPlaybackStatus,
   Video,
   VideoReadyForDisplayEvent
 } from 'expo-av';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import { ResizeMode } from "expo-av";
 import api from '../api/api';
+import Record from '../class/Record';
 import SelectItem from '../class/SelectItem';
 import FloatLoading from '../common/FloatLoading';
-import VideoControls from "../common/VideoControls";
-import useNavigationFocus from '../navigation/useNavigationFocus';
 import SecureStorage from '../common/SecureStorage';
+import VideoControls from "../common/VideoControls";
 import Constants from '../constants/Constants';
-import Record from '../class/Record';
-import routes from '../navigation/routes';
+import useNavigationFocus from '../navigation/useNavigationFocus';
 
 const playbackSpeedOptions = [0.5, 0.75, 1, 1.25, 1.5, 2];
 
@@ -72,7 +70,7 @@ const VideoPage = (props: { navigation: any, setBackAction: React.Dispatch<React
     let selected = (route.params['list'] as SelectItem[]).find(s => s.id == currentId);
     let data = await api.downloadVideo(selected.data['apireq']);
 
-    await video.current.loadAsync({ uri: data.url, headers: { cookie: data.cookie } });
+    await video.current.loadAsync({ uri: data.url, headers: { cookie: data.cookie, referer: data.referer } });
     await video.current.setProgressUpdateIntervalAsync(1000);
     let records = await SecureStorage.getItem(Constants.record);
     if (records != '') {
@@ -95,7 +93,7 @@ const VideoPage = (props: { navigation: any, setBackAction: React.Dispatch<React
     }
   }
 
-  const recordVideo = () => {
+  const recordVideo = async () => {
     let selected = (route.params['list'] as SelectItem[]).find(s => s.id == currentId);
     let record: Record = {
       videoId: currentId,
@@ -103,8 +101,8 @@ const VideoPage = (props: { navigation: any, setBackAction: React.Dispatch<React
       duration: duration,
       seriesId: route.params['seriesId'],
       videoName: selected.title,
-      categoryId: route.params['categoryId'],
-      viewEpoch: Date.now()
+      viewEpoch: Date.now(),
+      source: await SecureStorage.getSource()
     }
     api.recordVideo(record);
   }

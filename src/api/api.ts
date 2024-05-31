@@ -3,26 +3,25 @@ import SecureStorage from "../common/SecureStorage";
 import Constants from "../constants/Constants";
 import Sources from "../constants/Sources";
 import anime1Api from "./anime1Api";
+import myselfApi from "./myselfApi";
 
 const api = {
     getAnimeList: async () => {
         let source = await SecureStorage.getSource();
         switch (source) {
             case Sources.Anime1:
-                let resp = anime1Api.getAnimeList();
-                return resp;
+                return anime1Api.getAnimeList();;
             case Sources.Myself:
-                break;
+                return myselfApi.getAnimeList();
         }
     },
-    getSeries: async (seriesId: string) => {
+    getSeries: async (seriesId: string, header: string = '') => {
         let source = await SecureStorage.getSource();
         switch (source) {
             case Sources.Anime1:
-                let resp = anime1Api.animeSeries(seriesId);
-                return resp;
+                return anime1Api.animeSeries(seriesId);
             case Sources.Myself:
-                break;
+                return myselfApi.animeSeries(seriesId, header);
         }
     },
     getSeasons: () => {
@@ -50,10 +49,9 @@ const api = {
         let source = await SecureStorage.getSource();
         switch (source) {
             case Sources.Anime1:
-                let resp = anime1Api.downloadVideo(apireq);
-                return resp;
+                return anime1Api.downloadVideo(apireq);
             case Sources.Myself:
-                break;
+                return myselfApi.downloadVideo(apireq);
         }
     },
     recordVideo: async (record: Record) => {

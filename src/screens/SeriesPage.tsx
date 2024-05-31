@@ -33,7 +33,7 @@ const SeriesPage = (props: { navigation: any }) => {
         useCallback(() => {
             let id = route.params['id'];
             const getList = async () => {
-                let list = await api.getSeries(id);
+                let list = await api.getSeries(id, route.params['header']);
                 setSeriesList(list);
                 setIsLoading(false);
             };
@@ -64,6 +64,7 @@ const SeriesPage = (props: { navigation: any }) => {
     const onSelectItem = (item: SelectItem) => {
         let id = route.params['id'];
         let data = { list, selectedId: item.id, seriesId: id, header: route.params['header'] };
+        console.log(list);
         navigation.navigate(routes.Video.key, data);
     };
 
@@ -71,7 +72,7 @@ const SeriesPage = (props: { navigation: any }) => {
         <ScrollView style={styles.container}>
             <View style={styles.container}>
                 <Loading show={isLoading} />
-                {list.map(item => (
+                {list && list.map(item => (
                     <Button mode='outlined' hasTVPreferredFocus={item.focus} percentage={item.data['percentage']} key={item.id} onPress={() => onSelectItem(item)}>{item.title}</Button>
                 ))}
             </View>

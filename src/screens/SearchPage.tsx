@@ -1,6 +1,7 @@
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { ScrollView, View } from 'react-native';
 import SelectItem from '../class/SelectItem';
 import {
     Button,
@@ -10,9 +11,8 @@ import {
 } from '../common/StyledComponents';
 import { useTVTheme } from '../common/TVTheme';
 import Constants from '../constants/Constants';
-import useNavigationFocus from '../navigation/useNavigationFocus';
-import { useFocusEffect } from '@react-navigation/native';
 import routes from '../navigation/routes';
+import useNavigationFocus from '../navigation/useNavigationFocus';
 
 const SearchPage = (props: { navigation: any }) => {
     const { navigation } = props;

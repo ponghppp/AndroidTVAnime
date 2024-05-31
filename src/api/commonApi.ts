@@ -1,7 +1,3 @@
-import SecureStorage from "../common/SecureStorage";
-import Constants from "../constants/Constants";
-import Sources from "../constants/Sources";
-
 const commonApi = {
     getTagHtml: (html, tag) => {
         var articleStart = [];
@@ -25,7 +21,7 @@ const commonApi = {
                 break;
             }
         }
-        var articleMaps: {start: any, end: any}[] = [];
+        var articleMaps: { start: any, end: any }[] = [];
         for (var i = 0; i < articleStart.length; i++) {
             var articleMap = {
                 start: articleStart[i],
@@ -44,11 +40,11 @@ const commonApi = {
         var articleStart = [];
         var articleEnd = [];
         var articles = [];
-        var articleMaps: {start: any, end: number }[] = [];
+        var articleMaps: { start: any, end: number }[] = [];
         var currentIdx = 0;
         var startRe = '<' + tag + ' ' + firstAttr;
         var endRe = '</' + tag + '>';
-    
+
         while (html.indexOf(startRe, currentIdx) > -1) {
             var startIdx = html.indexOf(startRe, currentIdx);
             articleStart.push(startIdx);
@@ -113,6 +109,9 @@ const commonApi = {
         var slash = href.lastIndexOf('/');
         var id = href.substring(slash + 1)
         return id;
+    },
+    delay: (time) => {
+        return new Promise(resolve => setTimeout(resolve, time));
     }
 }
 export default commonApi;

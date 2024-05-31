@@ -80,7 +80,7 @@ const RightButton = (props: {
   const sourceSelected = (source: string) => {
     SecureStorage.setItem(Constants.source, source);
     sourceModelClose();
-    navigation.popToTop();
+    if (canGoBack) navigation.popToTop();
   }
 
   return (
@@ -109,7 +109,7 @@ const RightButton = (props: {
         <View style={modalStyle}>
           <SectionContainer title="影片來源">
             {Object.values(Sources).map(s => (
-              <Button mode="contained" onPress={() => sourceSelected(s)}>{s}</Button>
+              <Button mode="contained" key={s} onPress={() => sourceSelected(s)}>{s}</Button>
             ))}
             <Button mode="contained" onPress={sourceModelClose}> {'關閉'}</Button>
           </SectionContainer>

@@ -4,7 +4,7 @@ interface Record {
     duration: number, 
     seriesId: string, 
     videoName: string,
-    categoryId: string,
-    viewEpoch: number
+    viewEpoch: number,
+    source: string
 }
 export default Record

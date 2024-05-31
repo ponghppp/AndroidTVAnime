@@ -67,7 +67,7 @@ const anime1Api = {
         );
         let json = resp.data;
         let cookie = resp.headers["set-cookie"]
-        return { url: 'https:' + json['s'][0]['src'], cookie: cookie[0] }
+        return { url: 'https:' + json['s'][0]['src'], cookie: cookie[0], referer: '' }
     },
     getSeasonAnime: async (season: string) => {
         var url = 'https://anime1.me/' + season;
@@ -89,7 +89,6 @@ const anime1Api = {
         let html = resp.data;
         var articles = commonApi.getTagHtml(html, 'article');
         let list: SelectItem[] = [];
-        let results: { animeId: string, categoryId: string, categoryName: string }[] = [];
         for (var i = 0; i < articles.length; i++) {
             var article = articles[i];
             var tagAs = commonApi.getTagHtml(article, 'a');

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Modal,
   useTVEventHandler,
@@ -16,6 +16,7 @@ import {
 import { useTVTheme } from '../common/TVTheme';
 import Constants from '../constants/Constants';
 import Sources from '../constants/Sources';
+import { useFocusEffect } from '@react-navigation/native';
 
 const RightButton = (props: {
   title: string;
@@ -23,12 +24,23 @@ const RightButton = (props: {
   navigation?: any;
 }) => {
   const [modalShown, setModalShown] = React.useState(false);
+  const [source, setSource] = React.useState('');
   const [sourceModalShown, setSourceModalShown] = React.useState(false);
   const [tvEventName, setTvEventName] = React.useState('');
   const [tvEventsShown, setTVEventsShown] = React.useState(false);
   const { title, canGoBack, navigation } = props;
 
   const { colors } = useTVTheme();
+
+  useFocusEffect(
+    useCallback(() => {
+      const getSource = async () => {
+        let source = await SecureStorage.getSource();
+        setSource(source);
+      }
+      getSource();
+    }, [])
+  );
 
   useTVEventHandler(event => {
     setTvEventName(event.eventType);
@@ -95,6 +107,7 @@ const RightButton = (props: {
         <View style={modalStyle}>
           <SectionContainer title="設定">
             <Text>{hermesText}</Text>
+            <Text>{'影片來源: ' + source}</Text>
             <Button mode="contained" onPress={sourceBtnPressed}>{'影片來源'}</Button>
             <Button mode="contained" onPress={deleteBtnPressed}>{'刪除影片記錄'}</Button>
             <Button mode="contained" onPress={() => setModalShown(false)}>{'關閉'}</Button>

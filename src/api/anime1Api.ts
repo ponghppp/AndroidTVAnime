@@ -62,13 +62,9 @@ const anime1Api = {
     },
     downloadVideo: async (apireq: string) => {
         let url = 'https://v.anime1.me/api';
-        let resp = await axios.post(url,
-            'd=' + apireq,
-            {
-                method: 'post',
-                headers: { "Content-Type": 'application/x-www-form-urlencoded' }
-            }
-        );
+        let data = 'd=' + apireq;
+        let config = { method: 'post', headers: { "Content-Type": 'application/x-www-form-urlencoded' } };
+        let resp = await axios.post(url, data, config);
         let json = resp.data;
         let cookie = resp.headers["set-cookie"]
         return { url: 'https:' + json['s'][0]['src'], cookie: cookie[0], referer: '' }
@@ -108,7 +104,7 @@ const anime1Api = {
             var categoryName = commonApi.getInnerHtml(firstA);
             var categoryId = commonApi.getTagAttr(firstA, 'href', ' ').replace('https://anime1.me/category/', '');
             if (!list.find(l => l.id == categoryId)) {
-                list.push({id: categoryId, title: categoryName, header: categoryName} as SelectItem)
+                list.push({ id: categoryId, title: categoryName, header: categoryName } as SelectItem)
             }
         }
         //has previous page

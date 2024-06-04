@@ -88,10 +88,9 @@ const api = {
         let source = await SecureStorage.getSource();
         switch (source) {
             case Sources.Anime1:
-                let resp = anime1Api.searchAnime(1, input);
-                return resp;
+                return anime1Api.searchAnime(1, input);
             case Sources.Myself:
-                break;
+                return myselfApi.searchAnime(1, input);
         }
     }
 }

@@ -62,14 +62,35 @@ const myselfApi = {
     getSeasonAnime: async (season: string) => {
 
     },
-    searchAnime: async (page: number = 1, input: string) => {
-        let homeUrl = 'https://myself-bbs.com/portal.php';
-        let resp = await axios.get(homeUrl);
+    searchAnime: async (page: number = 1, input: string, next_url: string) => {
+        let host = 'https://myself-bbs.com/';
+        let url = host + 'search.php?searchsubmit=yes';
+        if (page != 1) url = host + next_url;
+        let data = { srchtxt: input };
+        let config = { method: 'post', headers: { "Content-Type": 'application/x-www-form-urlencoded' } };
+        let resp = await axios.post(url, data, config);
         let html = resp.data;
-        let root = HTMLParser.parse(html);
-        let formhash = root.querySelectorAll('input[name="formhash"]');
+        let list: SelectItem[] = [];
 
-        let url = `https://myself-bbs.com/search.php?mod=forum&searchid=4172&orderby=lastpost&ascdesc=desc&searchsubmit=yes&kw=${input}&page=${page}`
+        var root = HTMLParser.parse(html);
+        let pbws = root.querySelectorAll('.pbw');
+        let item: { href: string, type: string, title: string }[] = pbws.map(p => ({
+            href: p.querySelector('a').attributes['href'],
+            type: p.querySelector('.xi1').text,
+            title: p.querySelector('a').text
+        }));
+        item = item.filter(i => i.type.includes('動畫'));
+        let allList = item.map(t => ({ id: t.href, title: t.title, header: t.title }) as SelectItem);
+        list = list.concat(allList.filter((value, index, array) => array.map(a => a.id).indexOf(value.id) === index));
+
+        let hasNextPage = root.querySelector('.nxt');
+        if (hasNextPage) {
+            let pg = root.querySelector('.pg');
+            let pages = pg.querySelectorAll('a').map(p => ({ page: p.text, url: p.attributes['href'] }));
+            let nextPage = pages[pages.length -1];
+            list = list.concat(await myselfApi.searchAnime(0, input, nextPage.url));
+        }
+        return list;
     }
 }
 export default myselfApi;

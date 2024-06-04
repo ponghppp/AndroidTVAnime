@@ -97,8 +97,7 @@ const SearchPage = (props: { navigation: any }) => {
     const deleteWord = () => {
         if (quickWord.length > 0) {
             setQuickWord(quickWord.substring(0, quickWord.length - 1));
-        }
-        else {
+        } else {
             setInput(input.substring(0, input.length - 1));
         }
     }
@@ -148,7 +147,7 @@ const SearchPage = (props: { navigation: any }) => {
                     {quickWordSelection.map(k => (
                         <Button mode={'outlined'} key={k.id} onPress={() => onSelectItem(k)}>{k.title}</Button>
                     ))}
-                    <View style={{height: 70}}></View>
+                    <View style={{ height: 70 }}></View>
                 </RowContainer>
             </ScrollView>
             {list.map(l => (

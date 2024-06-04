@@ -44,17 +44,21 @@ const myselfApi = {
         ws.onopen = (e) => {
             let msg = JSON.stringify({ tid: '', vid: '', id: apireq.replace('\r', '') });
             ws.send(msg);
+            console.log('open', msg);
         };
         ws.onclose = (e) => {
             isReturn = true;
+            console.log('close', e);
         };
         ws.onerror = (e) => {
             isReturn = true;
+            console.log('error', e);
         };
         ws.onmessage = (e) => {
             isReturn = true;
             let json = JSON.parse(e.data);
             item.url = 'https:' + json.video;
+            console.log('msg', e);
         };
         while (!isReturn) await commonApi.delay(1000);
         return item;

@@ -12,6 +12,8 @@ import useNavigationFocus from '../navigation/useNavigationFocus';
 import Loading from '../common/Loading';
 import { useRoute } from '@react-navigation/native';
 import anime1Api from '../api/anime1Api';
+import SecureStorage from '../common/SecureStorage';
+import Sources from '../constants/Sources';
 
 const ResultPage = (props: { navigation: any }) => {
     const { navigation } = props;
@@ -35,8 +37,10 @@ const ResultPage = (props: { navigation: any }) => {
     }, [])
 
     const onSelectItem = async (item: SelectItem) => {
-        let seriesId = await anime1Api.getSeriesIdByCategoryId(item.id);
-        item.id = seriesId;
+        if (await SecureStorage.getSource() == Sources.Anime1) {
+            let seriesId = await anime1Api.getSeriesIdByCategoryId(item.id);
+            item.id = seriesId;
+        }
         navigation.navigate(routes.Series.key, item)
     };
 

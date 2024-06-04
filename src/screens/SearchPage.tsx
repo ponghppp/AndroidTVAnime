@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { MutableRefObject, useCallback, useEffect } from 'react';
 
 import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, View } from 'react-native';
@@ -27,6 +27,7 @@ const SearchPage = (props: { navigation: any }) => {
     const [quickDict, setQuickDict] = React.useState({});
     const [keyboard, setKeyboard] = React.useState<[[{ key: string, value: string }]]>();
     const [isCap, setIsCap] = React.useState(false);
+    const scrollView = React.useRef<ScrollView>();
 
     useEffect(() => {
         let dict = require('../../assets/ms_quick.dict.json');
@@ -104,6 +105,7 @@ const SearchPage = (props: { navigation: any }) => {
 
     const onSelectItem = (item: SelectItem) => {
         if (!item.id.match(/[a-z]/i) || item.force) {
+            scrollView.current.scrollTo({ x: 0, y: 0 });
             setInput(input + item.title);
             setQuickWord('');
             setQuickWordSelection([]);
@@ -138,11 +140,10 @@ const SearchPage = (props: { navigation: any }) => {
             setInput(input + item.title);
         }
     };
-
     return (
         <ScrollView style={styles.container}>
             <Text style={{ fontSize: 30, textAlign: 'center' }}>{input}</Text>
-            <ScrollView horizontal={true}>
+            <ScrollView horizontal={true} ref={scrollView}>
                 <RowContainer>
                     {quickWordSelection.map(k => (
                         <Button mode={'outlined'} key={k.id} onPress={() => onSelectItem(k)}>{k.title}</Button>
@@ -151,7 +152,7 @@ const SearchPage = (props: { navigation: any }) => {
                 </RowContainer>
             </ScrollView>
             {list.map(l => (
-                <CenterRowContainer>
+                <CenterRowContainer key={list.indexOf(l)}>
                     {l.map(k => (
                         <Button mode={k.hover ? 'contained' : 'outlined'} key={k.id} onPress={() => onSelectItem(k)}>{k.title}</Button>
                     ))}

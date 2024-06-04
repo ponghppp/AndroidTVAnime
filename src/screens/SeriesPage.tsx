@@ -14,6 +14,7 @@ import useNavigationFocus from '../navigation/useNavigationFocus';
 import SecureStorage from '../common/SecureStorage';
 import Constants from '../constants/Constants';
 import Record from '../class/Record';
+import FloatLoading from '../common/FloatLoading';
 
 const SeriesPage = (props: { navigation: any }) => {
     const { navigation } = props;
@@ -71,7 +72,7 @@ const SeriesPage = (props: { navigation: any }) => {
         <ScrollView style={styles.container}>
             <View style={styles.container}>
                 <Loading show={isLoading} />
-                {list && list.map(item => (
+                {!isLoading && list && list.map(item => (
                     <Button mode='outlined' hasTVPreferredFocus={item.focus} percentage={item.data['percentage']} key={item.id} onPress={() => onSelectItem(item)}>{item.title}</Button>
                 ))}
             </View>

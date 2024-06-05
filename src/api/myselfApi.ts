@@ -24,16 +24,17 @@ const myselfApi = {
         let lis = epList.querySelectorAll('li');
         let sName = '';
         if (seriesName) {
-            sName = seriesName.split(' ')[0];
+            sName = seriesName.split('【')[0];
             if (seriesName.split(' ').pop().match(/[0-9]/i)) {
                 sName = seriesName.split(' ')[0];
             }
         }
+        let playerUrl = 'https://v.myself-bbs.com/player/';
         let list: SelectItem[] = lis.map(l => ({
-            id: l.querySelectorAll('a')[1].attributes['data-href'].split('/').pop(),
+            id: l.querySelectorAll('a').find(a => a.text == '站內').attributes['data-href'].replace(playerUrl, ''),
             title: sName + ' ' + l.querySelectorAll('a')[0].text,
             header: sName,
-            data: { apireq: l.querySelectorAll('a')[1].attributes['data-href'].split('/').pop() }
+            data: { apireq: l.querySelectorAll('a').find(a => a.text == '站內').attributes['data-href'].replace(playerUrl, '') }
         }));
         return list.reverse();
     },
@@ -42,7 +43,16 @@ const myselfApi = {
         var isReturn = false;
         var item = { url: '', cookie: '', referer: 'https://v.myself-bbs.com/' };
         ws.onopen = (e) => {
-            let msg = JSON.stringify({ tid: '', vid: '', id: apireq.replace('\r', '') });
+            let prefix = 'play/';
+            let tid = '';
+            let vid = '';
+            let id = apireq.replace(prefix, '').replace('\r', '');
+            if (apireq.startsWith(prefix)) {
+                tid = id.split('/')[0];
+                vid = id.split('/')[1];
+                id = '';
+            };
+            let msg = JSON.stringify({ tid, vid, id });
             ws.send(msg);
             console.log('open', msg);
         };
@@ -91,7 +101,7 @@ const myselfApi = {
         if (hasNextPage) {
             let pg = root.querySelector('.pg');
             let pages = pg.querySelectorAll('a').map(p => ({ page: p.text, url: p.attributes['href'] }));
-            let nextPage = pages[pages.length -1];
+            let nextPage = pages[pages.length - 1];
             list = list.concat(await myselfApi.searchAnime(0, input, nextPage.url));
         }
         return list;

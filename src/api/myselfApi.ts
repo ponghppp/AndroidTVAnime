@@ -39,7 +39,8 @@ const myselfApi = {
         return list.reverse();
     },
     downloadVideo: async (apireq: string) => {
-        var ws = new WebSocket('wss://v.myself-bbs.com/ws', null, { headers: { ['User-Agent']: "Mozilla/5.0" } });
+        let header = { headers: { ['User-Agent']: "Mozilla/5.0" } };
+        var ws = new WebSocket('wss://v.myself-bbs.com/ws', null, header);
         var isReturn = false;
         var item = { url: '', cookie: '', referer: 'https://v.myself-bbs.com/' };
         ws.onopen = (e) => {

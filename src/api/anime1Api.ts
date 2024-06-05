@@ -22,40 +22,23 @@ const anime1Api = {
         }
         let resp = await axios.get(url);
         let html = resp.data;
-        var animeNames = [];
-        var animeIds = [];
-        var h2s = commonApi.getTagHtml(html, 'h2');
-
-        for (var i = 0; i < h2s.length; i++) {
-            var tagAs = commonApi.getTagHtml(h2s[i], 'a');
-            if (tagAs.length == 0) {
-                continue;
-            }
-            var animeName = commonApi.getInnerHtml(tagAs[0]);
-            animeNames.push(animeName);
-
-            var href = commonApi.getTagAttr(tagAs[0], 'href', ' ');
-            var animeId = href.substring(href.lastIndexOf('/') + 1);
-            animeIds.push(animeId);
-        }
-        var root = HTMLParser.parse(html);
+        let root = HTMLParser.parse(html);
         let metas = root.querySelectorAll('meta');
         let meta = metas.find(m => m.attributes['name'] == 'keywords');
         let seriesName = meta.attributes['content'];
-        var videos = commonApi.getTagHtml(html, 'video');
-        for (var i = 0; i < videos.length; i++) {
-            var video = videos[i];
-            var animeName = animeNames[i];
-            var animeId = animeIds[i];
-            var apireq = commonApi.getTagAttr(video, 'data-apireq', ' ');
-            let item: SelectItem = { id: animeId, title: animeName, header: seriesName, data: { apireq } } as SelectItem
-            list.push(item);
-        }
+        let h2s = root.querySelectorAll('h2');
+        let videos = root.querySelectorAll('video');
+        let items: SelectItem = h2s.filter(h => h.querySelector('a') != undefined).map((h, i) => ({
+            id: h.querySelector('a').attributes['href'].split('/').pop(),
+            title: h.querySelector('a').text,
+            header: seriesName,
+            data: { apireq: videos[i].attributes['data-apireq'] }
+        } as SelectItem));
+        list = list.concat(items);
         //has prev page
         if (html.includes('nav-previous')) {
-            var navDiv = commonApi.getTagHtmlWithFirstAttr(html, 'div', 'class="nav-previous"');
-            var tagAs = commonApi.getTagHtml(navDiv[0], 'a');
-            var p_href = commonApi.getTagAttr(tagAs[0], 'href', ' ');
+            let navDiv = root.querySelector('div.nav-previous');
+            let p_href = navDiv.querySelector('a').attributes['href'];
             list = list.concat(await anime1Api.animeSeries('', p_href));
         }
         return list;
@@ -73,21 +56,21 @@ const anime1Api = {
         var url = 'https://anime1.me/' + season;
         let resp = await axios.get(url);
         let html = resp.data;
-        let tagAs = commonApi.getTagHtmlWithFirstAttr(html, 'a', 'href="/?cat=');
-        let list: SelectItem[] = [];
-        for (var i = 0; i < tagAs.length; i++) {
-            var id = commonApi.getTagAttr(tagAs[i], 'href', '"').split('=')[1];
-            var name = commonApi.getInnerHtml(tagAs[i]);
-            let item = { id: id, title: name, header: name } as SelectItem;
-            list.push(item);
-        }
+        let root = HTMLParser.parse(html);
+        let tagAs = root.querySelectorAll('a').filter(a => a.attributes['href'].startsWith('/?cat='));
+        let list: SelectItem[] = tagAs.map(a => ({
+            id: a.attributes['href'].split('=')[1],
+            title: a.text,
+            header: a.text
+        }));
         return list;
     },
     searchAnime: async (page: number = 1, input: string) => {
         var url = 'https://anime1.me/page/' + page + '?s=' + input;
         let resp = await axios.get(url);
         let html = resp.data;
-        var articles = commonApi.getTagHtml(html, 'article');
+        let root = HTMLParser.parse(html);
+        let articles = commonApi.getTagHtml(html, 'article');
         let list: SelectItem[] = [];
         for (var i = 0; i < articles.length; i++) {
             var article = articles[i];
